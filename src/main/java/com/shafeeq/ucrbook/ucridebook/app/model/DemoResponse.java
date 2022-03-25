@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DemoResponse {
 
-    private String resp = "hdskfsd";
+    private String resp = "Success!!";
 }
