@@ -79,7 +79,7 @@ public class SearchManager {
                 .build();
         Rider rider = userManager.getRider(riderId);
         Driver driver = userManager.getDriver(driverIds.get(0));
-        priceManager.calculateRidePrice(rideRequest, rider, driver);
+        priceManager.calculateRidePrice(rideRequest, driver.getVehicle().getVehicleType());
 
         // 1. Create ride in repository
         Ride ride = rideManager.createRide(rideRequest);

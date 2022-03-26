@@ -41,7 +41,7 @@ public class PriceManager {
 
     }
 
-    public Double calculateRidePrice(Ride ride, Rider rider, Driver driver){
+    public Double calculateRidePrice(Ride ride, VehicleType vehicleType){
         GeoCoord pickUp = ride.getPickupLocation();
         GeoCoord drop = ride.getPickupLocation();
         Double rideDist = distance(pickUp.lat, drop.lat, pickUp.lng, drop.lng, 0, 0);
@@ -56,7 +56,7 @@ public class PriceManager {
             price = price + rate * (Double.min(rideDist, upperLimit) - lowerLimit);
         }
         price = price + priceSlabs.get(priceSlabs.size()-1).snd * (rideDist - upperLimit - 1);
-        price = Double.max(minimumPrice, price);
+        price = Double.max(minimumPrice, price) * vehicleBasedPriceFactorMap.get(vehicleType);
         ride.setPrice(price);
         ride.setDistance(rideDist);
         log.info("RideId: {}, dist: {}, price: {}", ride.getRideId(), rideDist, price);

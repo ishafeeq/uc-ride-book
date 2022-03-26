@@ -1,7 +1,11 @@
 package com.shafeeq.ucrbook.ucridebook.app.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.shafeeq.ucrbook.ucridebook.app.model.Driver;
 import com.shafeeq.ucrbook.ucridebook.app.model.Ride;
@@ -37,11 +41,21 @@ public class RideManager {
         // 2. Update Rider's status and current ride id
         Rider rider = userManager.getRider(ride.getRiderId());
         rider.setCurrentRideId(null);
+        List<String> pastRidesOfRider = rider.getRideIds();
+        if(CollectionUtils.isEmpty(pastRidesOfRider)){
+            pastRidesOfRider = new ArrayList<>();
+        }
+        pastRidesOfRider.add(rideId);
         rider.setStatus(Status.AVAILABLE);
 
         // 3. Update driver status and current ride id
         Driver driver = userManager.getDriver(ride.getDriverId());
         driver.setCurrentRideId(null);
+        List<String> pastRidesOfDriver = rider.getRideIds();
+        if(CollectionUtils.isEmpty(pastRidesOfDriver)){
+            pastRidesOfDriver = new ArrayList<>();
+        }
+        pastRidesOfDriver.add(rideId);
         driver.setStatus(Status.AVAILABLE);
 
         return ride;

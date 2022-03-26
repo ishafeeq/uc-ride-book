@@ -60,40 +60,45 @@ public class DemoController {
 
         // Step-1 Register Riders or passengers in system
         List<String> riderIds = createRiders();
-        log.info("Registered {} riders/passengers in system", riderIds.size());
+        log.info("=== Step Summary ===> Registered {} riders/passengers in system\n", riderIds.size());
 
         // Step-2 Register Riders or drivers in system
         List<String> driverIds = createDrivers();
-        log.info("Registered {} drivers in system", driverIds.size());
+        log.info("=== Step Summary ===> Registered {} drivers in system\n", driverIds.size());
 
         // Step-3 Register Riders or drivers in system
         updateDriversLocations(driverIds);
-        log.info("Updated {} drivers location in system", driverIds.size());
+        log.info("=== Step Summary ===> Updated {} drivers location in system\n", driverIds.size());
 
         // Step-4 Print locations and hexAddr of all drivers
         printLocations(driverIds);
-        log.info("Printed {} drivers location in system", driverIds.size());
+        log.info("=== Step Summary ===> Printed {} drivers location in system\n", driverIds.size());
 
         // Step-5 Book ride for each rider
         List<Ride> rides = bookRideForRiders(riderIds);
-        log.info("Booked ride for each rider");
+        log.info("=== Step Summary ===> Booked ride for each rider\n");
 
         // Step-6 Print ongoing rides
         printRides(rides);
-        log.info("Printed ongoing rides");
+        log.info("=== Step Summary ===> Printed ongoing rides\n");
 
         // Step-7 Print rider and their ongoing rides
         printRiders(riderIds);
-        log.info("Printed ongoing rides");
+        log.info("=== Step Summary ===> Printed Riders with ongoing rides\n");
 
         // Step-8 Complete RIDE_0 and Fail RIDE_1
         updateRide();
-        log.info("Printed ongoing rides");
+        log.info("=== Step Summary ===> Updated rides as either complete or cancelled\n");
 
         log.info("=================== Demo Completed ========================");
         return new DemoResponse();
     }
 
+
+
+    /*
+    ========================================== code below this line is for data creation and executing flow for a set of riders and drivers ========================================
+    */
     private void updateRide() {
         Ride ride1 = rideManager.updateRide("RIDE_0", RideStatus.COMPLETED);
         Ride ride2 = rideManager.updateRide("RIDE_0", RideStatus.CANCELLED);
