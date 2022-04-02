@@ -6,15 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.shafeeq.ucrbook.ucridebook.app.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import com.shafeeq.ucrbook.ucridebook.app.model.Driver;
-import com.shafeeq.ucrbook.ucridebook.app.model.Status;
-import com.shafeeq.ucrbook.ucridebook.app.model.Rider;
-import com.shafeeq.ucrbook.ucridebook.app.model.Ride;
-import com.shafeeq.ucrbook.ucridebook.app.model.RideStatus;
 import com.shafeeq.ucrbook.ucridebook.app.repository.HexToDriversRepository;
 import com.shafeeq.ucrbook.ucridebook.app.repository.RideRepository;
 import com.uber.h3core.H3Core;
@@ -39,7 +35,7 @@ public class SearchManager {
     private PriceManager priceManager;
 
     private H3Core h3;
-    private int gridResolution = 12;
+    private int gridResolution = 6;
 
     @PostConstruct
     public void init(){
@@ -61,10 +57,10 @@ public class SearchManager {
         return "lat: " + cord.lat + " lng: " + cord.lng + " h3Hash: " + hexHash;
     }
 
-    public Ride createRide(String riderId, GeoCoord pickup, GeoCoord drop) {
+    public Ride createRide(String riderId, GeoCoord pickup, GeoCoord drop, VehicleType vehicleType) {
         String hexAddr = h3.geoToH3Address(pickup.lat, pickup.lng, gridResolution);
         List<String> allDriverIds = hexToDriversRepository.getDriversListForHexHash(hexAddr);
-        List<String> driverIds = getBestDriverId(allDriverIds);
+        List<String> driverIds = getBestDriverId(allDriverIds, vehicleType);
         if(CollectionUtils.isEmpty(driverIds)){
             log.info("No Drivers available in your area. Sorry for inconvinience. HexAddr: {}", hexAddr);
             return null;
@@ -95,12 +91,13 @@ public class SearchManager {
         return ride;
     }
 
-    private List<String> getBestDriverId(List<String> driverIds) {
+    private List<String> getBestDriverId(List<String> driverIds, VehicleType vehicleType) {
         return driverIds.stream()
             .map(dId -> {
                 return userManager.getDriver(dId);
             })
             .filter(driver -> Status.AVAILABLE.name().equals(driver.getStatus().name()))
+            .filter(driver -> driver.getVehicle().getVehicleType().name() == vehicleType.name())
             // We can sort it on the basis of distance from rider's pickup location
             .map(driver -> driver.getUser().getUserId())
             .collect(Collectors.toList());

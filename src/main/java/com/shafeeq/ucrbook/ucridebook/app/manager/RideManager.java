@@ -36,6 +36,9 @@ public class RideManager {
     public Ride updateRide(String rideId, RideStatus rideStatus) {
         // 1. Update ride status
         Ride ride = rideRepository.getRide(rideId);
+        if(ride != null && ride.getRideStatus() != null && ride.getRideStatus() == RideStatus.COMPLETED){
+            return ride;
+        }
         ride.setRideStatus(rideStatus);
 
         // 2. Update Rider's status and current ride id
@@ -44,6 +47,7 @@ public class RideManager {
         List<String> pastRidesOfRider = rider.getRideIds();
         if(CollectionUtils.isEmpty(pastRidesOfRider)){
             pastRidesOfRider = new ArrayList<>();
+            rider.setRideIds(pastRidesOfRider);
         }
         pastRidesOfRider.add(rideId);
         rider.setStatus(Status.AVAILABLE);
@@ -51,9 +55,10 @@ public class RideManager {
         // 3. Update driver status and current ride id
         Driver driver = userManager.getDriver(ride.getDriverId());
         driver.setCurrentRideId(null);
-        List<String> pastRidesOfDriver = rider.getRideIds();
+        List<String> pastRidesOfDriver = driver.getRideIds();
         if(CollectionUtils.isEmpty(pastRidesOfDriver)){
             pastRidesOfDriver = new ArrayList<>();
+            driver.setRideIds(pastRidesOfDriver);
         }
         pastRidesOfDriver.add(rideId);
         driver.setStatus(Status.AVAILABLE);

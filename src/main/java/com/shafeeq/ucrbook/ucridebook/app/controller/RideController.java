@@ -1,7 +1,8 @@
 package com.shafeeq.ucrbook.ucridebook.app.controller;
 
+import com.shafeeq.ucrbook.ucridebook.app.manager.RideManager;
 import com.shafeeq.ucrbook.ucridebook.app.manager.UserManager;
-import com.shafeeq.ucrbook.ucridebook.app.model.Driver;
+import com.shafeeq.ucrbook.ucridebook.app.model.Ride;
 import com.shafeeq.ucrbook.ucridebook.app.model.Rider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,22 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.net.URI;
 
 @Controller
-public class UserController {
+public class RideController {
 
 
     @Autowired
-    private UserManager userManager;
+    private RideManager rideManager;
 
-    @GetMapping(value = "/rider",
+    @GetMapping(value = "/ride",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<Rider> getRider(@RequestParam String riderId){
-        return ResponseEntity.created(URI.create("/rider")).body(userManager.getRider(riderId));
+    public ResponseEntity<Ride> getRider(@RequestParam String rideId){
+        return ResponseEntity.created(URI.create("/ride")).body(rideManager.getRide(rideId));
     }
-
-    @GetMapping(value = "/driver",
-            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<Driver> getDriver(@RequestParam String driverId){
-        return ResponseEntity.created(URI.create("/driver")).body(userManager.getDriver(driverId));
-    }
-
 }

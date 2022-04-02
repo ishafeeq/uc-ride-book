@@ -100,9 +100,9 @@ public class DemoController {
     ========================================== code below this line is for data creation and executing flow for a set of riders and drivers ========================================
     */
     private void updateRide() {
-        Ride ride1 = rideManager.updateRide("RIDE_0", RideStatus.COMPLETED);
-        Ride ride2 = rideManager.updateRide("RIDE_0", RideStatus.CANCELLED);
-        printRides(Arrays.asList(ride1, ride2));
+//        Ride ride1 = rideManager.updateRide("RIDE_0", RideStatus.COMPLETED);
+//        Ride ride2 = rideManager.updateRide("RIDE_0", RideStatus.CANCELLED);
+//        printRides(Arrays.asList(ride1, ride2));
     }
 
     private void printRiders(List<String> riderIds) {
@@ -118,7 +118,7 @@ public class DemoController {
 
     private void printRides(List<Ride> rides) {
         for(int i = 0; i < rides.size(); i++){
-            Ride ride = rides.get(0);
+            Ride ride = rides.get(i);
             log.info("Ride Details: RideId: {}, Price: {}, distance: {}, pickup: {}, drop: {}",
                     ride.getRideId(), ride.getPrice(), ride.getDistance(), ride.getPickupLocation(), ride.getDropLocation());
         }
@@ -133,14 +133,17 @@ public class DemoController {
 
     private List<Ride> bookRideForRiders(List<String> riderIds) {
         int ridersCount = riderIds.size();
-        double[] lats = {17.775938,   11.775938,   31.775938,  14.775938,  37.775938,  37.735838};
-        double[] lngs = {-103.427951, -113.427951, -123.427951, -113.427951, -131.427951, -134.427951};
+        double[] lats = {28.6225889, 11.775938,  27.9710297,78.0363866,  14.775938,  37.775938,  27.891516};
+        double[] lngs = {77.199821, -113.427951, -123.427951, -113.427951, -131.427951, 78.0661653};
+
+        double[] dlats = {28.5383617, 11.775938,  27.9710297,78.0363866,  14.775938,  37.775938,  27.891516};
+        double[] dlngs = {77.0520375, -113.427951, -123.427951, -113.427951, -131.427951, 78.0661653};
         List<Ride> rides = new ArrayList<>();
         for(int i = 0; i < ridersCount; i++){
             Rider rider = userManager.getRider(riderIds.get(i));
             log.info("Booking ride for rider: {}", rider.getUser().getUserName(), rider.getUser().getUserId());
             Ride ride = searchManager.createRide(riderIds.get(i),
-                    new GeoCoord(lats[i], lngs[i]), new GeoCoord(lats[ridersCount-i-1], lngs[ridersCount-i-1]));
+                    new GeoCoord(lats[i], lngs[i]), new GeoCoord(dlats[i], dlngs[i]), VehicleType.HATCHBACK);
             if(ride != null){
                 log.info("Congratulations! we found driver in your area");
                 Driver driver = userManager.getDriver(ride.getDriverId());
@@ -158,8 +161,8 @@ public class DemoController {
     }
 
     private void updateDriversLocations(List<String> driverIds) {
-        double[] lats = {17.775938, 27.775938, 37.775938, 37.735838};
-        double[] lngs = {-113.427951, -123.427951, -131.427951, -134.427951};
+        double[] lats = {28.6220828, 27.775938, 37.775938, 47.735838};
+        double[] lngs = {77.2042008, -123.427951, -131.427951, -134.427951};
         for(int i = 0; i < driverIds.size(); i++){
             searchManager.updateLocation(driverIds.get(i), lats[i], lngs[i]);
         }
